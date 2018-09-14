@@ -20,22 +20,21 @@ var ErrTxEmpty = errors.New("tx is empty")
 // DB == sql.DB
 type DB = sql.DB
 
+// DB == sql.DB
+type Result = sql.Result
+
 // Scanner provides a header for generic SQL data set
 type Scanner interface {
 	Scan(...interface{}) error
 }
 
-// Open creates a db connection using
-func Open(dbname string) (*DB, error) {
-	dataSourceName := getDataSourceName()
+// New creates a db connection using mysql
+func New(dataSourceName string) (*DB, error) {
+	return sql.Open("mysql", dataSourceName)
+}
 
-	if db, err := sql.Open("mysql", dataSourceName); err != nil {
-		return nil, err
-	} else if _, err = db.Exec("USE " + dbname); err != nil {
-		return nil, err
-	} else {
-		return db, nil
-	}
+func Use(db *DB, table string) (Result, error) {
+	return db.Exec("USE " + table)
 }
 
 // Patch returns the current patch number for the database
