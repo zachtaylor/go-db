@@ -25,11 +25,16 @@ func envDataSourceName() string {
 	return user + `:` + password + `@tcp(` + host + `:` + port + `)/`
 }
 
-// OpenEnv uses env to get the database connection settings
-func OpenEnv() (*DB, error) {
-	if db, err := New(envDataSourceName()); err != nil {
+// OpenEnv uses Open and env to get the database connection settings
+func OpenEnv(table string) (*DB, error) {
+	return Open(envDataSourceName(), table)
+}
+
+// Open creates a DB connection for the dsn and table name
+func Open(dsn string, table string) (*DB, error) {
+	if db, err := New(dsn); err != nil {
 		return nil, err
-	} else if _, err = Use(db, env.Get(DB_TABLE)); err != nil {
+	} else if _, err = Use(db, table); err != nil {
 		return nil, err
 	} else {
 		return db, nil
