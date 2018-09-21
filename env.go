@@ -26,8 +26,8 @@ func envDataSourceName() string {
 }
 
 // OpenEnv uses Open and env to get the database connection settings
-func OpenEnv(table string) (*DB, error) {
-	return Open(envDataSourceName(), table)
+func OpenEnv() (*DB, error) {
+	return Open(envDataSourceName(), env.Get(DB_TABLE))
 }
 
 // Open creates a DB connection for the dsn and table name
