@@ -90,6 +90,11 @@ func scanPatch(db *DB) (int, error) {
 	return patch, nil
 }
 
+// BuildDSN returns a formatted DSN string
+func BuildDSN(user, password, host, port string) string {
+	return user + `:` + password + `@tcp(` + host + `:` + port + `)/`
+}
+
 // CreatePatchTable creates the patch table
 func CreatePatchTable(db *DB) error {
 	return ExecTx(db, `CREATE TABLE patch(patch INTEGER) ENGINE=InnoDB; INSERT INTO patch (patch) VALUES (0);`)

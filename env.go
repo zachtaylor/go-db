@@ -18,11 +18,7 @@ const DB_PORT = "DB_PORT"
 const DB_TABLE = "DB_TABLE"
 
 func envDataSourceName() string {
-	user := env.Get(DB_USER)
-	password := env.Get(DB_PASSWORD)
-	host := env.Get(DB_HOST)
-	port := env.Get(DB_PORT)
-	return user + `:` + password + `@tcp(` + host + `:` + port + `)/`
+	return BuildDSN(env.Get(DB_USER), env.Get(DB_PASSWORD), env.Get(DB_HOST), env.Get(DB_PORT))
 }
 
 // OpenEnv uses Open and env to get the database connection settings
