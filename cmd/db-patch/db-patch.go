@@ -11,20 +11,16 @@ import (
 	"ztaylor.me/log"
 )
 
-// DB_TABLE is name of env var
-const DB_TABLE = "DB_TABLE"
-
 // PATCH_DIR is name of env var
 const PATCH_DIR = "PATCH_DIR"
 
 var errNotSQL = errors.New("file is not .sql type")
 
 func main() {
-	tableName := env.Get("DB_TABLE")
 	log.SetLevel("debug")
-	log.Add("DB_HOST", env.Get(db.DB_HOST)).Add("DB_TABLE", tableName).Debug("db-patch: starting...")
+	log.Add("DB_HOST", env.Get(db.DB_HOST)).Add("DB_TABLE", env.Get(db.DB_TABLE)).Debug("db-patch: starting...")
 
-	conn, err := db.Open(tableName)
+	conn, err := db.OpenEnv()
 	if err != nil {
 		log.Add("Error", err).Error("db-patch: error opening db")
 		return
