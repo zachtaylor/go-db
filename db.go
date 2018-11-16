@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strings"
 
+	// package db only uses mysql
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -20,7 +21,7 @@ var ErrTxEmpty = errors.New("tx is empty")
 // DB == sql.DB
 type DB = sql.DB
 
-// DB == sql.DB
+// Result == sql.Result
 type Result = sql.Result
 
 // Scanner provides a header for generic SQL data set
@@ -33,8 +34,20 @@ func New(dataSourceName string) (*DB, error) {
 	return sql.Open("mysql", dataSourceName)
 }
 
+// Use prepares a db connection by issuing SQL "USE" command
 func Use(db *DB, table string) (Result, error) {
 	return db.Exec("USE " + table)
+}
+
+// Open creates a DB connection for the dsn and table name
+func Open(dsn string, table string) (*DB, error) {
+	if db, err := New(dsn); err != nil {
+		return nil, err
+	} else if _, err = Use(db, table); err != nil {
+		return nil, err
+	} else {
+		return db, nil
+	}
 }
 
 // Patch returns the current patch number for the database
@@ -42,7 +55,7 @@ func Patch(db *DB) (int, error) {
 	if patch, err := scanPatch(db); err == nil {
 		return patch, nil
 	} else if e := err.Error(); len(e) > 10 && e[:10] == "Error 1146" {
-		return 0, ErrPatchTable
+		return -1, ErrPatchTable
 	} else {
 		return -1, err
 	}
