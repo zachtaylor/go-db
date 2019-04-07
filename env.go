@@ -14,10 +14,10 @@ const DB_HOST = "DB_HOST"
 // DB_PORT is name of env var
 const DB_PORT = "DB_PORT"
 
-// DB_TABLE is name of env var
-const DB_TABLE = "DB_TABLE"
+// DB_NAME is name of env var
+const DB_NAME = "DB_NAME"
 
-// OpenEnv uses an env.Provider to Open() a database connection
-func OpenEnv(env env.Provider) (*DB, error) {
-	return Open(BuildDSN(env.Get(DB_USER), env.Get(DB_PASSWORD), env.Get(DB_HOST), env.Get(DB_PORT)), env.Get(DB_TABLE))
+// OpenEnv uses an env.Service to Open() a database connection
+func OpenEnv(env env.Service) (*DB, error) {
+	return Open(BuildDSN(env.Get(DB_USER), env.Get(DB_PASSWORD), env.Get(DB_HOST), env.Get(DB_PORT)), env.Get(DB_NAME))
 }

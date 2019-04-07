@@ -5,18 +5,18 @@ import (
 	"errors"
 	"strings"
 
-	// package db only uses mysql
+	// load mysql driver
 	_ "github.com/go-sql-driver/mysql"
 )
 
 // ErrPatchTable is returned by Patch when the patch table doesn't exist
-var ErrPatchTable = errors.New("patch table does not exist")
+var ErrPatchTable = errors.New(`table "patch" does not exist`)
 
 // ErrSQLPanic is returned by ExecTx when it encounters a panic
-var ErrSQLPanic = errors.New("sql panic")
+var ErrSQLPanic = errors.New(`sql panic`)
 
 // ErrTxEmpty is returned by ExecTx when tx has no statements
-var ErrTxEmpty = errors.New("tx is empty")
+var ErrTxEmpty = errors.New(`patch file contains no statements`)
 
 // DB == sql.DB
 type DB = sql.DB
@@ -34,16 +34,11 @@ func New(dataSourceName string) (*DB, error) {
 	return sql.Open("mysql", dataSourceName)
 }
 
-// Use prepares a db connection by issuing SQL "USE" command
-func Use(db *DB, table string) (Result, error) {
-	return db.Exec("USE " + table)
-}
-
-// Open creates a DB connection for the dsn and table name
+// Open creates a DB connection for the DSN and table name
 func Open(dsn string, table string) (*DB, error) {
 	if db, err := New(dsn); err != nil {
 		return nil, err
-	} else if _, err = Use(db, table); err != nil {
+	} else if _, err = db.Exec("USE " + table); err != nil {
 		return nil, err
 	} else {
 		return db, nil
@@ -51,6 +46,8 @@ func Open(dsn string, table string) (*DB, error) {
 }
 
 // Patch returns the current patch number for the database
+//
+// returns -1, ErrPatchTable if the table doesn't exist
 func Patch(db *DB) (int, error) {
 	if patch, err := scanPatch(db); err == nil {
 		return patch, nil
@@ -59,6 +56,10 @@ func Patch(db *DB) (int, error) {
 	} else {
 		return -1, err
 	}
+}
+func scanPatch(db *DB) (patch int, err error) {
+	err = db.QueryRow("SELECT * FROM patch").Scan(&patch)
+	return
 }
 
 // ExecTx uses database transaction to apply SQL statements
@@ -91,16 +92,6 @@ func ExecTx(db *DB, sql string) error {
 		}
 	}
 	return err
-}
-
-func scanPatch(db *DB) (int, error) {
-	var patch int
-	row := db.QueryRow("SELECT * FROM patch")
-	err := row.Scan(&patch)
-	if err != nil {
-		return 0, err
-	}
-	return patch, nil
 }
 
 // BuildDSN returns a formatted DSN string
