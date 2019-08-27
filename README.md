@@ -2,13 +2,16 @@
 
 `import "ztaylor.me/db"`
 
-Package db provides database connection helpers for MySQL
+Package `db` provides database connection helpers
 
-## `db.OpenEnv()`
+## Package `dbe`
 
-`db.OpenEnv` creates `sql.DB` using runtime options. For more information, please see `ztaylor.me/env`.
+`import "ztaylor.me/db/env"`
+
+Package `dbe` provides bindings to `ztaylor.me/env`
 
 Environment variables
+
 ```
 DB_USER
 DB_PASSWORD
@@ -17,15 +20,19 @@ DB_PORT
 DB_NAME
 ```
 
-## `cmd/db-patch`
+## Package `mysql`
 
-Executable: connect to database, and execute a series of patches; supports options defined by `db.OpenEnv`
+`import "ztaylor.me/db/mysql"`
 
-Additional environment variables
-```
-PATCH_DIR
-```
+Package `mysql` loads mysql driver using `"github.com/go-sql-driver/mysql"`
 
-Patches are executed in sequential order. They must be named as `"dddd.*\.sql"`. In other words, patch file names begin with 4 numbers, and end with `".sql"`
+# Binary `db-patch`
 
-Patch files are executed as SQL transactions; each patch file will succeed or fail as a whole
+`go get ztaylor.me/db/cmd/db-patch`
+
+Connect to a database using MySQL, and execute a series of patches
+
+ - Supports runtime options using `"ztaylor.me/db/env"`
+ - New runtime option `"PATCH_DIR"` path of dir containing patch files named as `regex("dddd.*\.sql")`. In other words, patch file names begin with 4 numbers, and end with `".sql"`
+ - Create table `patches` to record db version
+ - Patch files are executed as SQL transactions; each patch will succeed or fail as a whole

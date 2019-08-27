@@ -6,5 +6,5 @@ ztaylor.me/cast v0.0.2 h1:K9vtCRnIYzdEGmJypTSJAOzWzeRhiWT+41UYs35PPEs=
 ztaylor.me/cast v0.0.2/go.mod h1:G9ymn3cfJzslKFC0rnChiiDMJQoe8LOOyY1XzuDOFGQ=
 ztaylor.me/env v0.0.0 h1:IsP131IIm0N0Jyl9v4tlpEEc2DALdlskjSqwHx9TcFg=
 ztaylor.me/env v0.0.0/go.mod h1:vtM3k89yjEvOoZBoplhurPCEQXqzePJo2sWniru1YFg=
-ztaylor.me/log v0.0.1 h1:uQ//4BFxpFuNop1TVaoIYnLarZ3cqlZIRbj6sKmuCSo=
-ztaylor.me/log v0.0.1/go.mod h1:zCmtXbSOu3AoJxLfGUrLvHmRz5ZFqldvUR+zbVQlwNk=
+ztaylor.me/log v0.0.2 h1:xxAqtoSQAP04xn/2aMnq1HgNVUs9HIFxgaIoE1KTy5Y=
+ztaylor.me/log v0.0.2/go.mod h1:zCmtXbSOu3AoJxLfGUrLvHmRz5ZFqldvUR+zbVQlwNk=

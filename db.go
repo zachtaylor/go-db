@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"errors"
 	"strings"
-
-	// load mysql driver
-	_ "github.com/go-sql-driver/mysql"
 )
+
+// Version is the module version
+const Version = "v0.0.1"
 
 // ErrPatchTable is returned by Patch when the patch table doesn't exist
 var ErrPatchTable = errors.New(`table "patch" does not exist`)
@@ -29,20 +29,9 @@ type Scanner interface {
 	Scan(...interface{}) error
 }
 
-// New creates a db connection using mysql
-func New(dataSourceName string) (*DB, error) {
-	return sql.Open("mysql", dataSourceName)
-}
-
-// Open creates a DB connection for the DSN and table name
-func Open(dsn string, table string) (*DB, error) {
-	if db, err := New(dsn); err != nil {
-		return nil, err
-	} else if _, err = db.Exec("USE " + table); err != nil {
-		return nil, err
-	} else {
-		return db, nil
-	}
+// Service is a database driver
+type Service interface {
+	Open(string) (*DB, error)
 }
 
 // Patch returns the current patch number for the database
@@ -95,11 +84,6 @@ func ExecTx(db *DB, sql string) error {
 }
 
 // BuildDSN returns a formatted DSN string
-func BuildDSN(user, password, host, port string) string {
-	return user + `:` + password + `@tcp(` + host + `:` + port + `)/`
-}
-
-// CreatePatchTable creates the patch table
-func CreatePatchTable(db *DB) error {
-	return ExecTx(db, `CREATE TABLE patch(patch INTEGER) ENGINE=InnoDB; INSERT INTO patch (patch) VALUES (0);`)
+func BuildDSN(user, password, host, port, table string) string {
+	return user + `:` + password + `@tcp(` + host + `:` + port + `)/` + table
 }

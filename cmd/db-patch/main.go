@@ -6,6 +6,8 @@ import (
 
 	"ztaylor.me/cast"
 	"ztaylor.me/db"
+	dbe "ztaylor.me/db/env"
+	"ztaylor.me/db/mysql"
 	"ztaylor.me/env"
 	"ztaylor.me/log"
 )
@@ -15,22 +17,24 @@ const PATCH_DIR = "PATCH_DIR"
 
 func main() {
 	env := env.Global()
-	conn, err := db.OpenEnv(env)
+	conn, err := mysql.Open(dbe.BuildDSN(env))
 	logger := log.StdOutService(log.LevelDebug)
 	if conn == nil {
 		logger.New().Add("Error", err).Error("failed to open db")
 		return
 	}
 	logger.New().With(log.Fields{
-		"DB_HOST": env.Get(db.DB_HOST),
-		"DB_NAME": env.Get(db.DB_NAME),
-	}).Info("starting...")
+		dbe.DB_HOST: env.Get(dbe.DB_HOST),
+		dbe.DB_NAME: env.Get(dbe.DB_NAME),
+		PATCH_DIR:   env.Get(PATCH_DIR),
+		"Version":   db.Version,
+	}).Info("starting")
 
 	// get current patch info
 	patch, err := db.Patch(conn)
 	if err == db.ErrPatchTable {
 		logger.New().Warn(err.Error())
-		if err := db.CreatePatchTable(conn); err != nil {
+		if err := mysql.CreatePatchTable(conn); err != nil {
 			logger.New().Add("Error", err).Error("failed to create patch table")
 			return
 		}
