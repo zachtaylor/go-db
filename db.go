@@ -7,7 +7,7 @@ import (
 )
 
 // Version is the module version
-const Version = "v0.0.1"
+const Version = "v0.0.2"
 
 // ErrPatchTable is returned by Patch when the patch table doesn't exist
 var ErrPatchTable = errors.New(`table "patch" does not exist`)

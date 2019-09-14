@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"time"
 
@@ -9,6 +10,7 @@ import (
 	dbe "ztaylor.me/db/env"
 	"ztaylor.me/db/mysql"
 	"ztaylor.me/env"
+	enviro "ztaylor.me/env"
 	"ztaylor.me/log"
 )
 
@@ -16,7 +18,15 @@ import (
 const PATCH_DIR = "PATCH_DIR"
 
 func main() {
-	env := env.Global()
+	env := enviro.NewDefaultService()
+	enviro.ParseFlags(env)
+
+	if env.Default(`version`, `false`) == `true` {
+		fmt.Printf(`db-patch version ` + db.Version)
+		return
+	}
+
+	enviro.ParseFile(env, ".env")
 	conn, err := mysql.Open(dbe.BuildDSN(env))
 	logger := log.StdOutService(log.LevelDebug)
 	if conn == nil {
@@ -39,6 +49,7 @@ func main() {
 			return
 		}
 		logger.New().Info("created patch table")
+		patch = 0 // reset patch=-1 during error
 	} else if err != nil {
 		logger.New().Add("Error", err).Error("failed to identify patch number")
 		return
