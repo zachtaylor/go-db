@@ -18,9 +18,9 @@ golang.org/x/tools v0.0.0-20180917221912-90fa682c2a6e/go.mod h1:n7NCudcB/nEzxVGm
 golang.org/x/tools v0.0.0-20190606124116-d0a3d012864b/go.mod h1:/rFqwRUd4F7ZHNgwSSTFct+R/Kf4OFW1sUzUTQQTgfc=
 google.golang.org/appengine v1.6.2 h1:j8RI1yW0SkI+paT6uGwMlrMI/6zwYA6/CFil8rxOzGI=
 google.golang.org/appengine v1.6.2/go.mod h1:i06prIuMbXzDqacNJfV5OdTW448YApPu5ww/cMBSeb0=
-ztaylor.me/cast v0.0.2 h1:K9vtCRnIYzdEGmJypTSJAOzWzeRhiWT+41UYs35PPEs=
-ztaylor.me/cast v0.0.2/go.mod h1:G9ymn3cfJzslKFC0rnChiiDMJQoe8LOOyY1XzuDOFGQ=
+ztaylor.me/cast v0.0.3 h1:6v5cXNBXwv+cqWlyaBxr2hHFZNVU18VoQDAoQuKVWzY=
+ztaylor.me/cast v0.0.3/go.mod h1:p8ZQLnJl3eztST7dVCtbgRUbmxBzgNLW7pPFYTtwTEE=
 ztaylor.me/env v0.0.0 h1:IsP131IIm0N0Jyl9v4tlpEEc2DALdlskjSqwHx9TcFg=
 ztaylor.me/env v0.0.0/go.mod h1:vtM3k89yjEvOoZBoplhurPCEQXqzePJo2sWniru1YFg=
-ztaylor.me/log v0.0.3 h1:S8+PkSwJbxQ6w95/6oWkyRQa2B5uk5wro99zn/lnJSw=
-ztaylor.me/log v0.0.3/go.mod h1:zCmtXbSOu3AoJxLfGUrLvHmRz5ZFqldvUR+zbVQlwNk=
+ztaylor.me/log v0.0.4 h1:JgrXoNGPW3dcyDfhNkYInySNha0Coh+b/jwylNEFKd4=
+ztaylor.me/log v0.0.4/go.mod h1:o0Ub/H7U3AmfvjDTK/Vdv0W8izsbD/WtUXCwnChaStE=
