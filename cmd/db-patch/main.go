@@ -33,7 +33,7 @@ func main() {
 		logger.New().Add("Error", err).Error("failed to open db")
 		return
 	}
-	logger.New().With(log.Fields{
+	logger.New().With(cast.JSON{
 		dbe.DB_HOST: env.Get(dbe.DB_HOST),
 		dbe.DB_NAME: env.Get(dbe.DB_NAME),
 		PATCH_DIR:   env.Get(PATCH_DIR),
@@ -65,7 +65,7 @@ func main() {
 	// apply patches
 	for patch++; patches[patch] != ""; patch++ {
 		patchFile := patches[patch]
-		log := logger.New().With(log.Fields{
+		log := logger.New().With(cast.JSON{
 			"PatchID":   patch,
 			"PatchFile": patchFile,
 		})
@@ -89,7 +89,7 @@ func getPatches(env env.Service, logger log.Service) map[int]string {
 	patches := make(map[int]string)
 	if dir := env.Get(PATCH_DIR); dir != "" {
 		if files, err := ioutil.ReadDir(dir); err != nil {
-			logger.New().With(log.Fields{
+			logger.New().With(cast.JSON{
 				"PATCH_DIR": dir,
 				"Error":     err,
 			}).Error("failed to read PATCH_DIR")
@@ -100,7 +100,7 @@ func getPatches(env env.Service, logger log.Service) map[int]string {
 				} else if ext := name[len(name)-4:]; ext != ".sql" {
 					// file name does not end with ".sql"
 				} else if id := cast.IntS(name[:4]); id < 1 {
-					logger.New().With(log.Fields{
+					logger.New().With(cast.JSON{
 						"PATCH_DIR": dir,
 						"File":      name,
 					}).Warn("cannot parse patch id")
