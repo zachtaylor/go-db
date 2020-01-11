@@ -17,12 +17,15 @@ import (
 // PATCH_DIR is name of env var
 const PATCH_DIR = "PATCH_DIR"
 
+// Version is the version of the binary
+const Version = "0.0.2"
+
 func main() {
 	env := enviro.NewDefaultService()
 	enviro.ParseFlags(env)
 
-	if env.Default(`version`, `false`) == `true` {
-		fmt.Printf(`db-patch version ` + db.Version)
+	if env.Default(`version`, `false`) == `true` || env.Default(`v`, `false`) == `true` {
+		fmt.Printf(`db-patch version ` + Version + ` db version ` + db.Version)
 		return
 	}
 
