@@ -2,21 +2,21 @@ package db // import "ztaylor.me/db"
 
 import (
 	"database/sql"
-	"errors"
-	"strings"
+
+	"ztaylor.me/cast"
 )
 
 // Version is the module version
-const Version = "v0.0.7"
+const Version = "v0.0.8"
 
 // ErrPatchTable is returned by Patch when the patch table doesn't exist
-var ErrPatchTable = errors.New(`table "patch" does not exist`)
+var ErrPatchTable = cast.NewError(nil, `table "patch" does not exist`)
 
 // ErrSQLPanic is returned by ExecTx when it encounters a panic
-var ErrSQLPanic = errors.New(`sql panic`)
+var ErrSQLPanic = cast.NewError(nil, `sql panic`)
 
 // ErrTxEmpty is returned by ExecTx when tx has no statements
-var ErrTxEmpty = errors.New(`patch file contains no statements`)
+var ErrTxEmpty = cast.NewError(nil, `patch file contains no statements`)
 
 // DB == sql.DB
 type DB = sql.DB
@@ -72,8 +72,8 @@ func ExecTx(db *DB, sql string) error {
 			tx.Rollback()
 		}
 	}()
-	for _, stmt := range strings.Split(sql, `;`) {
-		if stmt = strings.Trim(stmt, "\n\r \t"); stmt != "" {
+	for _, stmt := range cast.Split(sql, `;`) {
+		if stmt = cast.Trim(stmt, "\n\r \t"); stmt != "" {
 			isEmpty = false
 			if _, err = tx.Exec(stmt); err != nil {
 				break

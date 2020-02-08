@@ -3,10 +3,8 @@ package mysql
 import (
 	"database/sql"
 
+	_ "github.com/go-sql-driver/mysql" // load mysql driver
 	"ztaylor.me/db"
-
-	// load mysql driver
-	_ "github.com/go-sql-driver/mysql"
 )
 
 // Open creates a db connection using mysql

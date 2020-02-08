@@ -14,24 +14,67 @@ import (
 	"ztaylor.me/log"
 )
 
+// Version is the version of the binary
+const Version = "0.0.3"
+
 // PATCH_DIR is name of env var
 const PATCH_DIR = "PATCH_DIR"
 
-// Version is the version of the binary
-const Version = "0.0.2"
+// ENV is name of env var
+const ENV = "env"
+
+// HelpMessage is printed when you use arg "-help" or -"h"
+var HelpMessage = `
+	db-patch runs database migrations
+	internally uses (or can create) table "patch" to manage revision number
+
+	--- options
+	[name]			[default]			[comment]
+
+	-help, -h		false				print this help page and then quit
+
+	-env			".env"				env file to be loaded before opening a database connection
+
+	-PATCH_DIR		"./"				directory to load patch files from
+
+	-DB_USER		(required)			username to use when connecting to database
+
+	-DB_PASSWORD		(required)			password to use when conencting to database
+
+	-DB_HOST		(required)			database host ip address
+
+	-DB_PORT		(required)			port to open database host ip with mysql
+
+	-DB_NAME		(required)			database name to connect to within database server
+`
 
 func main() {
 	env := enviro.NewDefaultService()
 	enviro.ParseFlags(env)
+	logger := log.StdOutService(log.LevelDebug)
+	logger.Formatter().CutSourcePath(0)
+	logger.New().With(cast.JSON{
+		"module": db.Version,
+	}).Debug("db-patch version", Version)
 
-	if env.Default(`version`, `false`) == `true` || env.Default(`v`, `false`) == `true` {
-		fmt.Printf(`db-patch version ` + Version + ` db version ` + db.Version)
+	if env.Default("help", "false") == "true" || env.Default("h", "false") == "true" {
+		fmt.Print(HelpMessage)
 		return
 	}
 
-	enviro.ParseFile(env, ".env")
+	if envFile := env.Default(ENV, ".env"); envFile == "" {
+		logger.New().Debug("no env")
+	} else if err := enviro.ParseFile(env, envFile); err != nil {
+		logger.New().With(cast.JSON{
+			"envFile": envFile,
+			"error":   err,
+		}).Error("failed to load environment")
+		return
+	} else {
+		logger.New().Debug("loaded env")
+	}
+
 	conn, err := mysql.Open(dbe.BuildDSN(env))
-	logger := log.StdOutService(log.LevelDebug)
 	if conn == nil {
 		logger.New().Add("Error", err).Error("failed to open db")
 		return
@@ -39,29 +82,54 @@ func main() {
 	logger.New().With(cast.JSON{
 		dbe.DB_HOST: env.Get(dbe.DB_HOST),
 		dbe.DB_NAME: env.Get(dbe.DB_NAME),
-		PATCH_DIR:   env.Get(PATCH_DIR),
-		"Version":   db.Version,
-	}).Info("starting")
+	}).Info("opened connection")
 
 	// get current patch info
 	patch, err := db.Patch(conn)
 	if err == db.ErrPatchTable {
 		logger.New().Warn(err.Error())
+		ansbuf := "?"
+		for ansbuf != "y" && ansbuf != "" && ansbuf != "n" {
+			fmt.Print(`patch table does not exist, create patch table now? (y/n): `)
+			fmt.Scanln(&ansbuf)
+			ansbuf = cast.Trim(ansbuf, " \t")
+		}
+		if ansbuf == "n" {
+			logger.New().Info("exit without creating patch table")
+			return
+		}
 		if err := mysql.CreatePatchTable(conn); err != nil {
 			logger.New().Add("Error", err).Error("failed to create patch table")
 			return
 		}
 		logger.New().Info("created patch table")
-		patch = 0 // reset patch=-1 during error
+		patch = 0 // reset patch=-1 from the error state
 	} else if err != nil {
 		logger.New().Add("Error", err).Error("failed to identify patch number")
 		return
+	} else {
+		logger.New().Info("found patch#", patch)
 	}
-	logger.New().Info("found patch#" + cast.StringI(patch))
 
 	patches := getPatches(env, logger)
 	if len(patches) < 1 {
 		logger.New().Error("no patches found")
+		return
+	}
+
+	for i := patch + 1; patches[i] != ""; i++ {
+		fmt.Println("queue patch#", i, " 	file:", patches[i])
+	}
+
+	// ask about patches
+	ansbuf := "?"
+	for ansbuf != "y" && ansbuf != "" && ansbuf != "n" {
+		fmt.Print("Apply patches? [y/n] (default 'y'): ")
+		fmt.Scanln(&ansbuf)
+		ansbuf = cast.Trim(ansbuf, " \t\n")
+	}
+	if ansbuf == "n" {
+		logger.New().Info("not applying patches")
 		return
 	}
 
