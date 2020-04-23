@@ -4,20 +4,20 @@
 
 Package `db` provides database connection helpers based on `database/sql`
 
-## Package `dbe`
+## Package `env`
 
 `import "ztaylor.me/db/env"`
 
-Package `dbe` provides bindings to `ztaylor.me/env` to assist in the creation of Data Source Name
+Package `env` provides bindings to `ztaylor.me/env` to assist in the creation of Data Source Name
 
 Environment variables used
 
 ```
-DB_USER
-DB_PASSWORD
-DB_HOST
-DB_PORT
-DB_NAME
+USER
+PASSWORD
+HOST
+PORT
+NAME
 ```
 
 ## Package `mysql`

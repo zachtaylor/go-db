@@ -22,16 +22,3 @@ func Open(dataSourceName string) (*db.DB, error) {
 func CreatePatchTable(x *db.DB) error {
 	return db.ExecTx(x, `CREATE TABLE patch(patch INTEGER) ENGINE=InnoDB; INSERT INTO patch (patch) VALUES (0);`)
 }
-
-// Service implements dbe.Service
-func Service() db.Service {
-	return &service{}
-}
-
-type service struct {
-}
-
-// Open implements dbenv.Service
-func (s *service) Open(dataSourceName string) (*db.DB, error) {
-	return Open(dataSourceName)
-}

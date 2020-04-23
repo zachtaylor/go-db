@@ -7,7 +7,7 @@ import (
 )
 
 // Version is the module version
-const Version = "v0.0.9"
+const Version = "v0.0.10"
 
 // ErrPatchTable is returned by Patch when the patch table doesn't exist
 var ErrPatchTable = cast.NewError(nil, `table "patch" does not exist`)
@@ -84,6 +84,6 @@ func ExecTx(db *DB, sql string) error {
 }
 
 // BuildDSN returns a formatted DSN string
-func BuildDSN(user, password, host, port, table string) string {
-	return user + `:` + password + `@tcp(` + host + `:` + port + `)/` + table
+func BuildDSN(user, password, host, port, name string) string {
+	return user + `:` + password + `@tcp(` + host + `:` + port + `)/` + name
 }

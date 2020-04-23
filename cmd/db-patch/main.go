@@ -7,21 +7,11 @@ import (
 
 	"ztaylor.me/cast"
 	"ztaylor.me/db"
-	dbe "ztaylor.me/db/env"
+	main_env "ztaylor.me/db/cmd/db-patch/env"
+	db_env "ztaylor.me/db/env"
 	"ztaylor.me/db/mysql"
-	"ztaylor.me/env"
-	enviro "ztaylor.me/env"
 	"ztaylor.me/log"
 )
-
-// Version is the version of the binary
-const Version = "0.0.3"
-
-// PATCH_DIR is name of env var
-const PATCH_DIR = "PATCH_DIR"
-
-// ENV is name of env var
-const ENV = "env"
 
 // HelpMessage is printed when you use arg "-help" or -"h"
 var HelpMessage = `
@@ -32,8 +22,6 @@ var HelpMessage = `
 	[name]			[default]			[comment]
 
 	-help, -h		false				print this help page and then quit
-
-	-env			".env"				env file to be loaded before opening a database connection
 
 	-PATCH_DIR		"./"				directory to load patch files from
 
@@ -49,39 +37,27 @@ var HelpMessage = `
 `
 
 func main() {
-	env := enviro.NewDefaultService()
-	enviro.ParseFlags(env)
+	env := main_env.NewService().ParseDefault()
 	logger := log.StdOutService(log.LevelDebug)
 	logger.Formatter().CutSourcePath(0)
 	logger.New().With(cast.JSON{
-		"module": db.Version,
-	}).Debug("db-patch version", Version)
+		"DB_NAME":   env["DB_NAME"],
+		"PATCH_DIR": env[main_env.PATCH_DIR],
+	}).Debug("db-patch", db.Version)
 
-	if env.Default("help", "false") == "true" || env.Default("h", "false") == "true" {
+	if cast.Bool(env["help"]) || cast.Bool(env["h"]) {
 		fmt.Print(HelpMessage)
 		return
 	}
 
-	if envFile := env.Default(ENV, ".env"); envFile == "" {
-		logger.New().Debug("no env")
-	} else if err := enviro.ParseFile(env, envFile); err != nil {
-		logger.New().With(cast.JSON{
-			"envFile": envFile,
-			"error":   err,
-		}).Error("failed to load environment")
-		return
-	} else {
-		logger.New().Debug("loaded env")
-	}
-
-	conn, err := mysql.Open(dbe.BuildDSN(env))
+	conn, err := mysql.Open(db_env.BuildDSN(env.Match("DB_")))
 	if conn == nil {
 		logger.New().Add("Error", err).Error("failed to open db")
 		return
 	}
 	logger.New().With(cast.JSON{
-		dbe.DB_HOST: env.Get(dbe.DB_HOST),
-		dbe.DB_NAME: env.Get(dbe.DB_NAME),
+		db_env.HOST: env[db_env.HOST],
+		db_env.NAME: env[db_env.NAME],
 	}).Info("opened connection")
 
 	// get current patch info
@@ -111,7 +87,7 @@ func main() {
 		logger.New().Info("found patch#", patch)
 	}
 
-	patches := getPatches(env, logger)
+	patches := main_env.GetPatches(env, logger)
 	if len(patches) < 1 {
 		logger.New().Error("no patches found")
 		return
@@ -153,33 +129,4 @@ func main() {
 	}
 
 	logger.New().Add("Patch", patch-1).Info("done")
-}
-
-// getPatches scans PATCH_DIR, returns map(patchid->filename)
-func getPatches(env env.Service, logger log.Service) map[int]string {
-	patches := make(map[int]string)
-	if dir := env.Get(PATCH_DIR); dir != "" {
-		if files, err := ioutil.ReadDir(dir); err != nil {
-			logger.New().With(cast.JSON{
-				"PATCH_DIR": dir,
-				"Error":     err,
-			}).Error("failed to read PATCH_DIR")
-		} else {
-			for _, f := range files {
-				if name := f.Name(); len(name) < 8 {
-					// file name too short
-				} else if ext := name[len(name)-4:]; ext != ".sql" {
-					// file name does not end with ".sql"
-				} else if id := cast.IntS(name[:4]); id < 1 {
-					logger.New().With(cast.JSON{
-						"PATCH_DIR": dir,
-						"File":      name,
-					}).Warn("cannot parse patch id")
-				} else {
-					patches[id] = dir + name
-				}
-			}
-		}
-	}
-	return patches
 }

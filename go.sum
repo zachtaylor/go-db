@@ -4,7 +4,7 @@ github.com/konsorten/go-windows-terminal-sequences v1.0.2 h1:DB17ag19krx9CFsz4o3
 github.com/konsorten/go-windows-terminal-sequences v1.0.2/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 ztaylor.me/cast v0.0.10 h1:vOFs8jFN/aPPL5VzQRhouWajs32sXrMKhLPpJcKEfxs=
 ztaylor.me/cast v0.0.10/go.mod h1:p8ZQLnJl3eztST7dVCtbgRUbmxBzgNLW7pPFYTtwTEE=
-ztaylor.me/env v0.0.0 h1:IsP131IIm0N0Jyl9v4tlpEEc2DALdlskjSqwHx9TcFg=
-ztaylor.me/env v0.0.0/go.mod h1:vtM3k89yjEvOoZBoplhurPCEQXqzePJo2sWniru1YFg=
+ztaylor.me/env v0.0.3 h1:SN7M3QmsKfIUuy5T6ywET6IakS1tt0DKoPn5Dti7YRY=
+ztaylor.me/env v0.0.3/go.mod h1:DkIjq922DQ15hEScmkm0LW5dwHAMGKniFkh/+s9ctpc=
 ztaylor.me/log v0.0.8 h1:0xd3TJCR64CJsz45wol3d1iZWWRT8srkKKV8lrxew1M=
 ztaylor.me/log v0.0.8/go.mod h1:Mp2F3tyEWcb+vot48HGlvBjMw4jis48APzMGuU9Wc3A=

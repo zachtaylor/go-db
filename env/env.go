@@ -1,26 +1,40 @@
-package dbe
+package env // import "ztaylor.me/db/env"
 
 import (
 	"ztaylor.me/db"
 	"ztaylor.me/env"
 )
 
-// DB_USER is name of env var
-const DB_USER = "DB_USER"
+// USER is name of env var
+const USER = "USER"
 
-// DB_PASSWORD is name of env var
-const DB_PASSWORD = "DB_PASSWORD"
+// PASSWORD is name of env var
+const PASSWORD = "PASSWORD"
 
-// DB_HOST is name of env var
-const DB_HOST = "DB_HOST"
+// HOST is name of env var
+const HOST = "HOST"
 
-// DB_PORT is name of env var
-const DB_PORT = "DB_PORT"
+// PORT is name of env var
+const PORT = "PORT"
 
-// DB_NAME is name of env var
-const DB_NAME = "DB_NAME"
+// NAME is name of env var
+const NAME = "NAME"
+
+// Service exports `env.Service`
+type Service = env.Service
+
+// NewService returns an `env.Service` with empty settings
+func NewService() env.Service {
+	return env.Service{
+		USER:     "",
+		PASSWORD: "",
+		HOST:     "",
+		PORT:     "",
+		NAME:     "",
+	}
+}
 
 // BuildDSN uses env.Service to build database DSN
 func BuildDSN(env env.Service) string {
-	return db.BuildDSN(env.Get(DB_USER), env.Get(DB_PASSWORD), env.Get(DB_HOST), env.Get(DB_PORT), env.Get(DB_NAME))
+	return db.BuildDSN(env[USER], env[PASSWORD], env[HOST], env[PORT], env[NAME])
 }
