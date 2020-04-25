@@ -2,9 +2,9 @@ github.com/go-sql-driver/mysql v1.5.0 h1:ozyZYNQW3x3HtqT1jira07DN2PArx2v7/mN66gG
 github.com/go-sql-driver/mysql v1.5.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LBy8hT2VhHyBg=
 github.com/konsorten/go-windows-terminal-sequences v1.0.2 h1:DB17ag19krx9CFsz4o3enTrPXyIXCl+2iCXH/aMAp9s=
 github.com/konsorten/go-windows-terminal-sequences v1.0.2/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
-ztaylor.me/cast v0.0.10 h1:vOFs8jFN/aPPL5VzQRhouWajs32sXrMKhLPpJcKEfxs=
-ztaylor.me/cast v0.0.10/go.mod h1:p8ZQLnJl3eztST7dVCtbgRUbmxBzgNLW7pPFYTtwTEE=
+ztaylor.me/cast v0.0.11 h1:p1SUbuHQ/mfpjckRXMu/e/6nzNPiZc2Z8aidJdr4LHg=
+ztaylor.me/cast v0.0.11/go.mod h1:p8ZQLnJl3eztST7dVCtbgRUbmxBzgNLW7pPFYTtwTEE=
 ztaylor.me/env v0.0.3 h1:SN7M3QmsKfIUuy5T6ywET6IakS1tt0DKoPn5Dti7YRY=
 ztaylor.me/env v0.0.3/go.mod h1:DkIjq922DQ15hEScmkm0LW5dwHAMGKniFkh/+s9ctpc=
-ztaylor.me/log v0.0.8 h1:0xd3TJCR64CJsz45wol3d1iZWWRT8srkKKV8lrxew1M=
-ztaylor.me/log v0.0.8/go.mod h1:Mp2F3tyEWcb+vot48HGlvBjMw4jis48APzMGuU9Wc3A=
+ztaylor.me/log v0.0.9 h1:heIc2jiZ8VcSAnOzO8wRuYUo2HTc6LvxDMsbNBIdkPw=
+ztaylor.me/log v0.0.9/go.mod h1:+NX5JLnk/4yJl4FDmBeRgNcnS8Y5rk6Y5N5LP4EskGk=
